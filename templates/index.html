@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>DashBoard</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.3.0/turf.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://unpkg.com/htmx.org@2.0.4"
+        integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ol@v10.3.1/dist/ol.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v10.3.1/ol.css">
+</head>
+
+<body>
+    <div class="loader">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="CleanClipper">
+
+
+    </div>
+    <!--[if lt IE 7]>
+                                <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+                            <![endif]-->
+    <div class="head">
+        <div id="capt"></div>
+    </div>
+    <div class="body_left">
+        <div class="content">
+            <h1>Informations Météo et GPS</h1>
+            <div id="lat"></div>
+            <div id="lon"></div>
+            <div id="vitesse"></div>
+            <div class="data" id="weather"></div>
+        </div>
+
+    </div>
+    <div class="body_map">
+        <div id="map" style="width: 100%;height: 100vh;"></div>
+
+    </div>
+    <div class="body_right">
+        <div class="content">
+            <h2>Destination</h2>
+            <input type="text" id="latitude-input" placeholder="Enter latitude" /><br>
+            <input type="text" id="longitude-input" placeholder="Enter longitude" /><br><br>
+            <button onclick="setDestination()">Set Destination</button>
+
+            <div id="route-info"></div>
+            <div class="compass-wrapper">
+                <h2>Direction du bateau</h2>
+                <div class="compass" id="boat-compass">
+                    <div class="compass-line" id="bateau-line"></div>
+                </div>
+                <h2>Direction du vent</h2>
+                <div class="compass" id="wind-compass">
+                    <div class="compass-line" id="vent-line"></div>
+                </div>
+                <h2>Direction de la voile</h2>
+                <div class="compass" id="voile-compass">
+                    <div class="compass-line" id="voile-line"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        fetch("{{ url_for('static', filename='land.json') }}")
+            .then(res => res.json())
+            .then(data => {
+                landPolygons = data;
+                L.geoJSON(landPolygons, {
+                    style: { color: "#228B22", weight: 1, fillOpacity: 0.1 }
+                }).addTo(map);
+            });
+            var myIcon = L.icon({
+    iconUrl: "{{ url_for('static', filename='boat.png') }}"
+});
+    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>
